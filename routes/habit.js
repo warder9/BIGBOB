@@ -69,5 +69,28 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
+// Update a specific habit
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['name', 'description', 'dueDate', 'status'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
+    if (!isValidOperation) {
+      return res.status(400).send({ error: 'Invalid updates!' });
+    }
+
+    const habit = await Habit.findOne({ _id: req.params.id, user: req.user._id });
+    if (!habit) {
+      return res.status(404).send({ error: 'Habit not found' });
+    }
+
+    updates.forEach((update) => (habit[update] = req.body[update]));
+    await habit.save();
+
+    res.send(habit);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
 module.exports = router;
