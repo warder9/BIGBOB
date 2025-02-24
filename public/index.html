@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Habit Tracker</h1>
+    <div id="auth">
+      <h2>Register</h2>
+      <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+      </form>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    <div id="habits" style="display: none;">
+      <h2>My Habits</h2>
+      <form id="addHabitForm">
+        <input type="text" id="habitName" placeholder="Habit Name" required>
+        <input type="text" id="habitDescription" placeholder="Description">
+        <input type="date" id="dueDate" required>
+        <button type="submit">Add Habit</button>
+      </form>
+      <ul id="habitList"></ul>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
