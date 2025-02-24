@@ -89,6 +89,7 @@ async function fetchHabits() {
         (habit) => `
         <li>
           <span>${habit.name} - ${habit.status}</span>
+          <button onclick="editHabit('${habit._id}')">Edit</button>
           <button onclick="deleteHabit('${habit._id}')">Delete</button>
         </li>
       `
@@ -113,3 +114,56 @@ window.deleteHabit = async (id) => {
     alert('Failed to delete habit');
   }
 };
+let currentHabitId = null;
+
+// Open the edit modal and populate it with habit data
+window.editHabit = async (id) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`/api/habits/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const habit = await response.json();
+
+  if (response.ok) {
+    currentHabitId = id;
+    document.getElementById('editHabitName').value = habit.name;
+    document.getElementById('editHabitDescription').value = habit.description;
+    document.getElementById('editDueDate').value = new Date(habit.dueDate).toISOString().split('T')[0];
+    document.getElementById('editStatus').value = habit.status;
+    document.getElementById('editModal').style.display = 'block';
+  } else {
+    alert('Failed to fetch habit details');
+  }
+};
+
+// Close the edit modal
+window.closeEditModal = () => {
+  document.getElementById('editModal').style.display = 'none';
+};
+
+// Handle the edit form submission
+document.getElementById('editHabitForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('editHabitName').value;
+  const description = document.getElementById('editHabitDescription').value;
+  const dueDate = document.getElementById('editDueDate').value;
+  const status = document.getElementById('editStatus').value;
+
+  const token = localStorage.getItem('token');
+
+  const response = await fetch(`/api/habits/${currentHabitId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, description, dueDate, status }),
+  });
+
+  if (response.ok) {
+    closeEditModal();
+    fetchHabits();
+  } else {
+    alert('Failed to update habit');
+  }
+});
